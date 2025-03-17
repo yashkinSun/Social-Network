@@ -1,0 +1,21 @@
+[% WRAPPER 'wrapper.tt' %]
+<h1>Лента постов</h1>
+
+[% IF posts.count == 0 %]
+    <p>Постов пока нет.</p>
+[% ELSE %]
+    <ul>
+    [% FOREACH p IN posts %]
+        <li>
+            <a href="/post/view/[% p.id %]">[% p.title %]</a>
+            <br/>
+            Автор: [% p.user.username %], дата: [% p.created_at %]
+        </li>
+    [% END %]
+    </ul>
+[% END %]
+
+[% IF c.user_exists %]
+    <p><a href="/post/create">Создать новый пост</a></p>
+[% END %]
+[% END %]

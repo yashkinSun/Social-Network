@@ -1,0 +1,14 @@
+[% WRAPPER 'wrapper.tt' %]
+<h1>Профиль: [% viewed_user.username %]</h1>
+<p>Email: [% viewed_user.email %]</p>
+<p>Bio: [% viewed_user.bio %]</p>
+<hr/>
+<h2>Посты:</h2>
+<ul>
+[% FOREACH p IN posts %]
+    <li>
+        <a href="/post/view/[% p.id %]">[% p.title %]</a>
+    </li>
+[% END %]
+</ul>
+[% END %]

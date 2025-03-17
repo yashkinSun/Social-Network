@@ -1,0 +1,22 @@
+[% WRAPPER 'wrapper.tt' %]
+<h1>Сообщения</h1>
+[% IF msgs.count == 0 %]
+    <p>Сообщений нет.</p>
+[% ELSE %]
+    <ul>
+    [% FOREACH m IN msgs %]
+      <li>
+        <strong>[% m.sender.username %] -> [% m.receiver.username %]:</strong>
+        [% m.content %] (дата: [% m.created_at %])
+      </li>
+    [% END %]
+    </ul>
+[% END %]
+
+<h2>Отправить новое сообщение</h2>
+<form method="post" action="/message/send">
+    <p>Кому (ID пользователя): <input type="text" name="receiver_id"/></p>
+    <p>Текст: <textarea name="content"></textarea></p>
+    <p><input type="submit" value="Отправить"/></p>
+</form>
+[% END %]

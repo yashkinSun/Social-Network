@@ -1,0 +1,35 @@
+[% WRAPPER 'wrapper.tt' %]
+<h1>Мои друзья/заявки</h1>
+
+<h2>Входящие заявки</h2>
+[% IF requests.count == 0 %]
+    <p>Нет заявок</p>
+[% ELSE %]
+    <ul>
+    [% FOREACH r IN requests %]
+        <li>
+            От: [% r.user.username %]
+            <form method="post" action="/friend/respond">
+                <input type="hidden" name="request_id" value="[% r.id %]"/>
+                <button name="action" value="accept">Принять</button>
+                <button name="action" value="reject">Отклонить</button>
+            </form>
+        </li>
+    [% END %]
+    </ul>
+[% END %]
+
+<h2>Принятые друзья</h2>
+<ul>
+[% FOREACH f IN friends %]
+    <li>
+        [% IF f.user_id == c.user.id %]
+            Друг: [% f.friend.username %]
+        [% ELSE %]
+            Друг: [% f.user.username %]
+        [% END %]
+        (статус: [% f.status %])
+    </li>
+[% END %]
+</ul>
+[% END %]

@@ -1,0 +1,20 @@
+[% WRAPPER 'wrapper.tt' %]
+<h1>[% post.title %]</h1>
+<div>
+    Автор: [% post.user.username %]
+</div>
+<div>
+    [% post.content %]
+</div>
+<div>
+    <img src="[% post.media_url %]" alt="placeholder"/>
+</div>
+
+[% IF c.user_exists && post.user_id == c.user.id %]
+    <p>
+        <a href="/post/edit/[% post.id %]">Редактировать</a> |
+        <a href="/post/delete/[% post.id %]" onclick="return confirm('Удалить пост?');">Удалить</a>
+    </p>
+[% END %]
+
+[% END %]

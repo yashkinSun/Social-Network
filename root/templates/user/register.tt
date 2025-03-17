@@ -1,0 +1,10 @@
+[% WRAPPER 'wrapper.tt' %]
+<h1>Регистрация</h1>
+[% IF error_msg %]<div class="error">[% error_msg %]</div>[% END %]
+<form method="post">
+    <p>Имя пользователя: <input type="text" name="username"/></p>
+    <p>Email: <input type="text" name="email"/></p>
+    <p>Пароль: <input type="password" name="password"/></p>
+    <p><input type="submit" value="Регистрация"/></p>
+</form>
+[% END %]

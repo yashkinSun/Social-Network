@@ -1,0 +1,9 @@
+[% WRAPPER 'wrapper.tt' %]
+<h1>Редактирование поста</h1>
+<form method="post">
+    <p>Заголовок: <input type="text" name="title" value="[% post.title | html %]"/></p>
+    <p>Текст: <textarea name="content">[% post.content | html %]</textarea></p>
+    <p>URL медиа: <input type="text" name="media_url" value="[% post.media_url | html %]"/></p>
+    <p><input type="submit" value="Сохранить"/></p>
+</form>
+[% END %]

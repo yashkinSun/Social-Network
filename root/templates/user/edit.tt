@@ -1,0 +1,9 @@
+[% WRAPPER 'wrapper.tt' %]
+<h1>Редактирование профиля</h1>
+[% IF message %]<div class="message">[% message %]</div>[% END %]
+<form method="post" enctype="multipart/form-data">
+    <p>Email: <input type="text" name="email" value="[% user.email | html %]"/></p>
+    <p>О себе (Bio): <textarea name="bio">[% user.bio | html %]</textarea></p>
+    <p><input type="submit" value="Сохранить"/></p>
+</form>
+[% END %]
