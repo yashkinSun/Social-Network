@@ -1,0 +1,19 @@
+[% WRAPPER 'wrapper.tt' %]
+
+<h1>Вход</h1>
+
+[% IF flash.message %]
+  <div class="message">[% flash.message %]</div>
+[% END %]
+
+[% IF error_msg %]
+  <div class="error">[% error_msg %]</div>
+[% END %]
+
+<form method="post" action="">
+    <p>Имя пользователя: <input type="text" name="username"/></p>
+    <p>Пароль: <input type="password" name="password"/></p>
+    <input type="submit" value="Войти"/>
+</form>
+
+[% END %]

@@ -21,7 +21,7 @@ __PACKAGE__->config(
         default => {
             class             => 'SimpleDB',
             user_model        => 'DB::User',
-            password_type     => 'hashed',
+            password_type     => 'none',
             password_hash_type=> 'SHA-1',
         },
     },

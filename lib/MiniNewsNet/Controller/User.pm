@@ -1,4 +1,5 @@
 package MiniNewsNet::Controller::User;
+use utf8;
 use Moose;
 use namespace::autoclean;
 use Digest::SHA qw(sha1_hex);
@@ -10,23 +11,23 @@ sub register : Path('/user/register') : Args(0) {
     my ($self, $c) = @_;
 
     if ($c->request->method eq 'POST') {
-        my $username = $c->request->params->{username} || '';
-        my $email    = $c->request->params->{email}    || '';
-        my $password = $c->request->params->{password} || '';
+        my $username = $c->request->param('username') || '';
+        my $email    = $c->request->param('email')    || '';
+        my $password = $c->request->param('password') || '';
 
-        # Минимальная проверка
         if ($username && $email && $password) {
-            my $check_user = $c->model('DB::User')->find({username => $username});
-            if ($check_user) {
+            my $exists = $c->model('DB::User')->find({ username => $username });
+            if ($exists) {
                 $c->stash->{error_msg} = "Имя пользователя уже занято";
             } else {
-                my $user = $c->model('DB::User')->create({
+                $c->model('DB::User')->create({
                     username   => $username,
                     email      => $email,
                     password   => sha1_hex($password),
                     created_at => DateTime->now,
                 });
-                $c->stash->{message} = "Регистрация успешна. Теперь вы можете войти.";
+                # Используем flash, чтобы сообщение отобразилось после редиректа
+                $c->flash->{message} = "Регистрация успешна. Теперь вы можете войти.";
                 $c->response->redirect($c->uri_for('/user/login'));
                 return;
             }
@@ -42,11 +43,13 @@ sub login : Path('/user/login') : Args(0) {
     my ($self, $c) = @_;
 
     if ($c->request->method eq 'POST') {
-        my $username = $c->request->params->{username} || '';
-        my $password = $c->request->params->{password} || '';
+        my $username = $c->request->param('username') || '';
+        my $password = $c->request->param('password') || '';
 
         if ($username && $password) {
-            if ($c->authenticate({ username => $username, password => sha1_hex($password) })) {
+            # Хэшируем пароль вручную, так как в конфиге password_type => 'none'
+            my $hashed = sha1_hex($password);
+            if ($c->authenticate({ username => $username, password => $hashed })) {
                 $c->response->redirect($c->uri_for('/'));
                 return;
             } else {
@@ -57,6 +60,7 @@ sub login : Path('/user/login') : Args(0) {
         }
     }
 
+    # login.tt должен отображать flash.message, если он есть
     $c->stash(template => 'user/login.tt');
 }
 
@@ -66,8 +70,7 @@ sub logout : Path('/user/logout') : Args(0) {
     $c->response->redirect($c->uri_for('/'));
 }
 
-# Пример "требования" логина перед доступом к маршрутам
-sub require_login :Private {
+sub require_login : Private {
     my ($self, $c) = @_;
     unless ($c->user_exists) {
         $c->stash->{error_msg} = "Требуется авторизация";
@@ -77,17 +80,14 @@ sub require_login :Private {
     return 1;
 }
 
-# Редактирование профиля
 sub edit : Path('/user/edit') : Args(0) {
     my ($self, $c) = @_;
     $c->detach('/user/require_login') unless $c->user_exists;
 
     my $user = $c->user->obj;
     if ($c->request->method eq 'POST') {
-        my $bio   = $c->request->params->{bio}   || '';
-        my $email = $c->request->params->{email} || $user->email;
-        # Пример загрузки аватара — для упрощения не реализуем полноценно
-        # ...
+        my $bio   = $c->request->param('bio')   || '';
+        my $email = $c->request->param('email') || $user->email;
 
         $user->update({
             bio        => $bio,
@@ -103,7 +103,6 @@ sub edit : Path('/user/edit') : Args(0) {
     );
 }
 
-# Публичный профиль
 sub profile : Path('/user/profile') : Args(1) {
     my ($self, $c, $username) = @_;
     my $user = $c->model('DB::User')->find({ username => $username });
