@@ -11,22 +11,29 @@ sub auto :Private {
     # Можно добавить проверку сессии или другие действия до каждого запроса
     return 1;
 }
-
-# Главная страница - лента постов
-sub index :Path :Args(0) {
+sub index : Path : Args(0) {
     my ($self, $c) = @_;
-    # Получаем посты из БД (упрощённая выборка)
-    my $posts = $c->model('DB::Post')->search(
-        {},
-        { order_by => { -desc => 'created_at' } }
-    );
 
-    $c->stash(
-        template => 'index.tt',
-        posts    => $posts,
-    );
+    # Диагностика пути
+    my $path = $c->path_to('root','templates','index.tt');
+    warn "Path to index.tt => $path";
+
+    # Добавим проверку -e (существование файла)
+    if (-e $path) {
+        $c->log->debug("Perl sees index.tt ( -e => TRUE )");
+    } else {
+        $c->log->debug("Perl does NOT see index.tt ( -e => FALSE )");
+    }
+    
+    if (-r $path) {
+        $c->log->debug("Index.tt is readable ( -r => TRUE )");
+    } else {
+        $c->log->debug("Index.tt is NOT readable ( -r => FALSE )");
+    }
+
+    # ...
+    $c->stash(template => 'index.tt');
 }
-
 # Страница ошибки 404
 sub default :Path {
     my ($self, $c) = @_;

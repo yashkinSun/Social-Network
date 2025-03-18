@@ -18,4 +18,5 @@
 [% IF c.user_exists %]
     <p><a href="/post/create">Создать новый пост</a></p>
 [% END %]
-[% END %]
+
+[% END %] <!-- Закрытие WRAPPER -->

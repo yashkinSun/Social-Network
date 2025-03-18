@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../lib";
-use MiniNewsNet;
 
-MiniNewsNet->run;
+use Catalyst::ScriptRunner;
+Catalyst::ScriptRunner->run('MiniNewsNet', 'Server');
+
+1;

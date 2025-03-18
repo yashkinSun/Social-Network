@@ -2,9 +2,6 @@ package MiniNewsNet;
 use Moose;
 use namespace::autoclean;
 
-use Catalyst::Runtime 5.80;
-
-# Загрузка плагинов Catalyst
 use Catalyst qw/
     -Debug
     ConfigLoader
@@ -17,20 +14,20 @@ use Catalyst qw/
 
 extends 'Catalyst';
 
-our $VERSION = '0.01';
-
 __PACKAGE__->config(
     name => 'MiniNewsNet',
-    # Настройки Static::Simple
-    static => {
-        dirs => [ 'static', 'favicon.ico' ],
-        include_path => [
-            __PACKAGE__->path_to('root'),
-        ],
+
+    'Plugin::Authentication' => {
+        default => {
+            class             => 'SimpleDB',
+            user_model        => 'DB::User',
+            password_type     => 'hashed',
+            password_hash_type=> 'SHA-1',
+        },
     },
 );
 
-# Инициализация приложения
 __PACKAGE__->setup();
 
 1;
+
